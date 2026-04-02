@@ -1,9 +1,0 @@
-{
-  "timestamp": "2026-04-02T20:49:37.277148+00:00",
-  "token": "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
-  "mode": "SLEEP",
-  "action": "NO ACTION",
-  "reason": "low SM activity (4 holders), netflow near zero (+0), few SM traders (0)",
-  "confidence": 0.5,
-  "result": "waiting"
-}

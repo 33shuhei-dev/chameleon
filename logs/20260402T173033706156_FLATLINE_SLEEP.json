@@ -1,9 +1,0 @@
-{
-  "timestamp": "2026-04-02T17:30:33.706133+00:00",
-  "token": "FLATLINE",
-  "mode": "SLEEP",
-  "action": "NO ACTION",
-  "reason": "SM\u5206\u6563 (\u96c6\u4e2d\u5ea6 0.28), netflow \u307b\u307c\u30bc\u30ed (+200), \u51fa\u6765\u9ad8\u5c11 ($420)",
-  "confidence": 0.64,
-  "result": "waiting for signal"
-}

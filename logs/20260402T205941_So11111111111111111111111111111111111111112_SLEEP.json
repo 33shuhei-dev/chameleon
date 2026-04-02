@@ -1,9 +1,0 @@
-{
-  "timestamp": "2026-04-02T20:59:39.400853+00:00",
-  "token": "So11111111111111111111111111111111111111112",
-  "mode": "SLEEP",
-  "action": "NO ACTION",
-  "reason": "no clear signal",
-  "confidence": 0.5,
-  "result": "waiting"
-}

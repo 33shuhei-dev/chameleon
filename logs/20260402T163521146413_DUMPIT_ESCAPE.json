@@ -1,9 +1,0 @@
-{
-  "timestamp": "2026-04-02T16:35:21.145689+00:00",
-  "token": "DUMPIT",
-  "mode": "ESCAPE",
-  "action": "SELL (no position)",
-  "reason": "netflow negative (-280,000), large sells detected (12), SM holders declining (-19.3%)",
-  "confidence": 0.95,
-  "result": "no open position to close"
-}

@@ -1,9 +1,0 @@
-{
-  "timestamp": "2026-04-02T17:30:33.690855+00:00",
-  "token": "SHADOW9",
-  "mode": "ESCAPE",
-  "action": "SELL",
-  "reason": "netflow \u30de\u30a4\u30ca\u30b9 (-280,000), \u5927\u53e3\u58f2\u308a\u691c\u51fa (12\u4ef6), SM\u30db\u30eb\u30c0\u30fc\u6e1b\u5c11 (-19.3%)",
-  "confidence": 0.95,
-  "result": "paper trade: SELL queued"
-}

@@ -1,9 +1,0 @@
-{
-  "timestamp": "2026-04-02T16:37:54.651308+00:00",
-  "token": "ROCKETFI",
-  "mode": "CHASE",
-  "action": "BLOCKED",
-  "reason": "netflow spike (+190,000 vs avg +85,000), tx surge (412 vs 158 prev), liquidity $320,000",
-  "confidence": 0.73,
-  "result": "daily halt: 2 consecutive losses reached"
-}
