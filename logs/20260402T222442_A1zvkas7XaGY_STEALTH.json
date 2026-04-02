@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-04-02T22:24:40.380747+00:00",
+  "token": "A1zvkas7XaGYaV9ztokfN11VwaiNGHkhqGCi4AYwpump",
+  "symbol": "SPONG",
+  "mode": "STEALTH",
+  "action": "BLOCKED",
+  "reason": "SM holders +1.0% (24h), netflow positive (+1099 USD/1h), 1 SM wallets holding",
+  "confidence": 0.57,
+  "result": "max open positions (1) reached"
+}

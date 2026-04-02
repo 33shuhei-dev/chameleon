@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-04-02T21:49:34.471963+00:00",
+  "token": "A1zvkas7XaGYaV9ztokfN11VwaiNGHkhqGCi4AYwpump",
+  "symbol": "SPONG",
+  "mode": "SLEEP",
+  "action": "NO ACTION",
+  "reason": "low SM activity (0 holders), few SM traders (1)",
+  "confidence": 0.5,
+  "result": "waiting"
+}

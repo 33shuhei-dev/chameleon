@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-04-02T21:17:40.412127+00:00",
+  "token": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
+  "symbol": "JUP",
+  "mode": "SLEEP",
+  "action": "NO ACTION",
+  "reason": "netflow near zero (+0), few SM traders (2)",
+  "confidence": 0.5,
+  "result": "waiting"
+}

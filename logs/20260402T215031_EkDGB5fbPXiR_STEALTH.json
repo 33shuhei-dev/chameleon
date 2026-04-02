@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-04-02T21:50:28.793863+00:00",
+  "token": "EkDGB5fbPXiRmDDjxKcC7dFjzvFZj2KT9t7oeyyPx4SX",
+  "symbol": "PIXEL",
+  "mode": "STEALTH",
+  "action": "BLOCKED",
+  "reason": "1 active SM traders (proxy), netflow positive (+150 USD/1h), 1 SM wallets holding",
+  "confidence": 0.56,
+  "result": "liquidity $0 below minimum $10,000"
+}

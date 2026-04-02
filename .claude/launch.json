@@ -1,0 +1,23 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "chameleon-bot",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["chameleon.py"],
+      "port": 8000
+    },
+    {
+      "name": "demo-run",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["demo_run.py"],
+      "port": 8001
+    },
+    {
+      "name": "debug-response",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["debug_response.py"],
+      "port": 8002
+    }
+  ]
+}

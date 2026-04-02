@@ -1,0 +1,9 @@
+{
+  "timestamp": "2026-04-02T17:13:54.587073+00:00",
+  "token": "SHADOW9",
+  "mode": "STEALTH",
+  "action": "BLOCKED",
+  "reason": "SM\u30db\u30eb\u30c0\u30fc +11.9%, netflow \u30d7\u30e9\u30b9, \u4fa1\u683c\u521d\u52d5 (+3.2% / 6h), \u9ad8\u96c6\u4e2d\u5ea6 (0.82)",
+  "confidence": 0.92,
+  "result": "liquidity $0 below minimum $10,000"
+}

@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-04-02T21:32:32.789260+00:00",
+  "token": "BjiCoaMNKVdK967BrQWfeXEmhTdAPC2k9hYL5dj5pump",
+  "symbol": "HEIST",
+  "mode": "SLEEP",
+  "action": "NO ACTION",
+  "reason": "low SM activity (0 holders), netflow near zero (+0), few SM traders (1)",
+  "confidence": 0.5,
+  "result": "waiting"
+}

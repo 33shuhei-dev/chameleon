@@ -1,0 +1,47 @@
+{
+  "token": "FLATLINE",
+  "scenario": "SLEEP",
+  "holdings": {
+    "token": "FLATLINE",
+    "sm_holder_count_6h_ago": 14,
+    "sm_holder_count_now": 14,
+    "sm_holder_change_pct": 0.0,
+    "top_wallets": [
+      {"wallet": "0xSM30", "balance": 5000, "label": "Unknown"},
+      {"wallet": "0xSM31", "balance": 4200, "label": "Unknown"},
+      {"wallet": "0xSM32", "balance": 3800, "label": "Unknown"}
+    ],
+    "concentration_score": 0.31
+  },
+  "netflow": {
+    "token": "FLATLINE",
+    "netflow_1h": 200,
+    "netflow_6h": -800,
+    "netflow_24h": 1100,
+    "netflow_direction": "neutral",
+    "avg_netflow_1h_recent": 350
+  },
+  "price": {
+    "token": "FLATLINE",
+    "price_usd": 0.000041,
+    "price_change_1h_pct": 0.2,
+    "price_change_6h_pct": -0.4,
+    "volume_24h_usd": 4200,
+    "liquidity_usd": 9200
+  },
+  "dex_trades": {
+    "token": "FLATLINE",
+    "tx_count_1h": 8,
+    "tx_count_prev_1h": 11,
+    "large_sells": 0,
+    "large_buys": 0,
+    "volume_1h_usd": 420
+  },
+  "flow_intelligence": {
+    "token": "FLATLINE",
+    "concentration": "low",
+    "wallet_count_leading": 0,
+    "dispersion_score": 0.72,
+    "signal": "noise"
+  }
+}

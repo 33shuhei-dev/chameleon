@@ -1,0 +1,38 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python demo_run.py)",
+      "Bash(python -c \"import strategy; print\\(''ok''\\)\")",
+      "Bash(py --version)",
+      "Bash(where python:*)",
+      "Bash(where python3:*)",
+      "Bash(python3 demo_run.py)",
+      "Bash(python3 -c \"print\\(''hello''\\)\")",
+      "Bash(echo \"exit: $?\")",
+      "Read(//c/Users/admin/AppData/Local/Programs/**)",
+      "Bash(ls \"/c/Python\"*)",
+      "Read(//usr/**)",
+      "Read(//usr/local/**)",
+      "Bash(/c/Users/admin/AppData/Local/Microsoft/WindowsApps/python3 --version)",
+      "Bash(echo \"exit $?\")",
+      "Read(//c/Users/admin/miniconda3/bin/**)",
+      "Read(//c/Users/admin/anaconda3/**)",
+      "Read(//c/ProgramData/**)",
+      "Bash(cmd.exe /c \"where python\")",
+      "Bash(cmd.exe /c \"python --version\")",
+      "Bash(cmd.exe /c \"python --version 2>&1 & where python 2>&1\")",
+      "Bash(cmd.exe /c \"dir C:\\\\Python* /b 2>&1 & dir C:\\\\Users\\\\admin\\\\AppData\\\\Local\\\\Programs\\\\Python* /b 2>&1\")",
+      "Bash(python -c \"import httpx; print\\(httpx.__version__\\)\")",
+      "Bash(pip install:*)",
+      "Bash(python -m pip install httpx)",
+      "WebFetch(domain:api.nansen.ai)",
+      "WebFetch(domain:docs.nansen.ai)",
+      "WebSearch",
+      "Bash(python chameleon.py)",
+      "Bash(python -c \":*)",
+      "Bash(python -c \"import chameleon; print\\(''OK''\\)\")",
+      "Bash(python -c \"import streamlit, plotly, pandas; print\\(''OK''\\)\")",
+      "Bash(python -c \"import sys; [print\\(l.encode\\(''''ascii'''',''''replace''''\\).decode\\(\\)\\) for l in sys.stdin]\")"
+    ]
+  }
+}

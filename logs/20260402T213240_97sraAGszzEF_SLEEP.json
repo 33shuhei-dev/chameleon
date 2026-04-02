@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-04-02T21:32:39.062213+00:00",
+  "token": "97sraAGszzEFY6AW8iuWfTceBQWa1RzuFRXryJqSbonk",
+  "symbol": "HEARING",
+  "mode": "SLEEP",
+  "action": "NO ACTION",
+  "reason": "low SM activity (0 holders), netflow near zero (+0), few SM traders (1)",
+  "confidence": 0.5,
+  "result": "waiting"
+}

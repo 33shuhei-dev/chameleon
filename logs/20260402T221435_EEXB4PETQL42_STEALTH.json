@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-04-02T22:14:33.449317+00:00",
+  "token": "EEXB4PETQL42SbnaqemwV1kiUbhHCw6rPYFpTX7fpump",
+  "symbol": "🌱 BIP360",
+  "mode": "STEALTH",
+  "action": "BUY",
+  "reason": "SM holders +1.0% (24h), netflow positive (+782 USD/1h), 1 SM wallets holding",
+  "confidence": 0.57,
+  "result": "executed"
+}

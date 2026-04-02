@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-04-02T22:04:52.498374+00:00",
+  "token": "7XdCaKpqLmKE2K7yr9xaeWB1H2CVZ1oGwxB6hmd9pump",
+  "symbol": "WIZARD",
+  "mode": "STEALTH",
+  "action": "BLOCKED",
+  "reason": "5 active SM traders (proxy), netflow positive (+36 USD/1h), 2 SM wallets holding",
+  "confidence": 0.6,
+  "result": "liquidity $0 below minimum $10,000"
+}

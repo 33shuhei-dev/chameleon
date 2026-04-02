@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-04-02T21:32:14.911100+00:00",
+  "token": "hntyVP6YFm1Hg25TN9WGLqM12b8TQmcknKrdu1oxWux",
+  "symbol": "HNT",
+  "mode": "SLEEP",
+  "action": "NO ACTION",
+  "reason": "netflow near zero (+0), few SM traders (0)",
+  "confidence": 0.5,
+  "result": "waiting"
+}

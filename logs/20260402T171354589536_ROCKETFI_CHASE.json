@@ -1,0 +1,9 @@
+{
+  "timestamp": "2026-04-02T17:13:54.589504+00:00",
+  "token": "ROCKETFI",
+  "mode": "CHASE",
+  "action": "BLOCKED",
+  "reason": "netflow \u30b9\u30d1\u30a4\u30af (+190,000 vs \u5e73\u5747 +85,000), DCA\u6025\u5897 (412\u4ef6 vs 158\u4ef6), \u6d41\u52d5\u6027 $320,000",
+  "confidence": 0.68,
+  "result": "liquidity $0 below minimum $10,000"
+}

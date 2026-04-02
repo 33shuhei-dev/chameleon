@@ -1,0 +1,9 @@
+{
+  "timestamp": "2026-04-02T20:42:21.634390+00:00",
+  "token": "So11111111111111111111111111111111111111112",
+  "mode": "SLEEP",
+  "action": "NO ACTION",
+  "reason": "low SM concentration (0.00), netflow near zero (+0), no DCA activity",
+  "confidence": 0.7,
+  "result": "waiting"
+}

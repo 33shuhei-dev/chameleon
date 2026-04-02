@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-04-02T21:32:09.336505+00:00",
+  "token": "rndrizKT3MK1iimdxRdWabcF7Zg7AR5T4nud4EkHBof",
+  "symbol": "RENDER",
+  "mode": "SLEEP",
+  "action": "NO ACTION",
+  "reason": "netflow near zero (+0)",
+  "confidence": 0.5,
+  "result": "waiting"
+}

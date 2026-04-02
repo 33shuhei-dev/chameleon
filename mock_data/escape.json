@@ -1,0 +1,46 @@
+{
+  "token": "DUMPIT",
+  "scenario": "ESCAPE",
+  "holdings": {
+    "token": "DUMPIT",
+    "sm_holder_count_6h_ago": 88,
+    "sm_holder_count_now": 71,
+    "sm_holder_change_pct": -19.3,
+    "top_wallets": [
+      {"wallet": "0xSM20", "balance": 12000, "label": "Smart Money (exiting)"},
+      {"wallet": "0xSM21", "balance": 8500, "label": "Smart Money (reduced)"}
+    ],
+    "concentration_score": 0.22
+  },
+  "netflow": {
+    "token": "DUMPIT",
+    "netflow_1h": -280000,
+    "netflow_6h": -650000,
+    "netflow_24h": -910000,
+    "netflow_direction": "negative",
+    "avg_netflow_1h_recent": -95000
+  },
+  "price": {
+    "token": "DUMPIT",
+    "price_usd": 0.0031,
+    "price_change_1h_pct": -14.2,
+    "price_change_6h_pct": -31.5,
+    "volume_24h_usd": 640000,
+    "liquidity_usd": 28000
+  },
+  "dex_trades": {
+    "token": "DUMPIT",
+    "tx_count_1h": 290,
+    "tx_count_prev_1h": 310,
+    "large_sells": 12,
+    "large_buys": 2,
+    "volume_1h_usd": 175000
+  },
+  "flow_intelligence": {
+    "token": "DUMPIT",
+    "concentration": "low",
+    "wallet_count_leading": 0,
+    "dispersion_score": 0.88,
+    "signal": "distribution"
+  }
+}

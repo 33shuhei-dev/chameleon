@@ -1,0 +1,9 @@
+{
+  "timestamp": "2026-04-02T16:35:44.541379+00:00",
+  "token": "SHADOW9",
+  "mode": "STEALTH",
+  "action": "BUY",
+  "reason": "SM holders +11.9%, netflow positive, early price phase (+3.2% in 6h), high SM concentration",
+  "confidence": 0.92,
+  "result": "paper trade: BUY queued"
+}

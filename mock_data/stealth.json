@@ -1,0 +1,47 @@
+{
+  "token": "SHADOW9",
+  "scenario": "STEALTH",
+  "holdings": {
+    "token": "SHADOW9",
+    "sm_holder_count_6h_ago": 42,
+    "sm_holder_count_now": 47,
+    "sm_holder_change_pct": 11.9,
+    "top_wallets": [
+      {"wallet": "0xSM1", "balance": 250000, "label": "Smart Money Alpha"},
+      {"wallet": "0xSM2", "balance": 180000, "label": "Smart Money Beta"},
+      {"wallet": "0xSM3", "balance": 95000, "label": "Smart Money Gamma"}
+    ],
+    "concentration_score": 0.82
+  },
+  "netflow": {
+    "token": "SHADOW9",
+    "netflow_1h": 45000,
+    "netflow_6h": 210000,
+    "netflow_24h": 310000,
+    "netflow_direction": "positive",
+    "avg_netflow_1h_recent": 22000
+  },
+  "price": {
+    "token": "SHADOW9",
+    "price_usd": 0.00412,
+    "price_change_1h_pct": 1.8,
+    "price_change_6h_pct": 3.2,
+    "volume_24h_usd": 85000,
+    "liquidity_usd": 47000
+  },
+  "dex_trades": {
+    "token": "SHADOW9",
+    "tx_count_1h": 38,
+    "tx_count_prev_1h": 35,
+    "large_sells": 0,
+    "large_buys": 3,
+    "volume_1h_usd": 12000
+  },
+  "flow_intelligence": {
+    "token": "SHADOW9",
+    "concentration": "high",
+    "wallet_count_leading": 3,
+    "dispersion_score": 0.18,
+    "signal": "accumulation"
+  }
+}

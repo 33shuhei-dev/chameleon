@@ -1,0 +1,47 @@
+{
+  "token": "ROCKETFI",
+  "scenario": "CHASE",
+  "holdings": {
+    "token": "ROCKETFI",
+    "sm_holder_count_6h_ago": 61,
+    "sm_holder_count_now": 65,
+    "sm_holder_change_pct": 6.6,
+    "top_wallets": [
+      {"wallet": "0xSM10", "balance": 500000, "label": "Whale Alpha"},
+      {"wallet": "0xSM11", "balance": 420000, "label": "Smart Money Delta"},
+      {"wallet": "0xSM12", "balance": 310000, "label": "Smart Money Epsilon"}
+    ],
+    "concentration_score": 0.55
+  },
+  "netflow": {
+    "token": "ROCKETFI",
+    "netflow_1h": 190000,
+    "netflow_6h": 520000,
+    "netflow_24h": 740000,
+    "netflow_direction": "positive",
+    "avg_netflow_1h_recent": 85000
+  },
+  "price": {
+    "token": "ROCKETFI",
+    "price_usd": 0.0891,
+    "price_change_1h_pct": 12.4,
+    "price_change_6h_pct": 28.7,
+    "volume_24h_usd": 1200000,
+    "liquidity_usd": 320000
+  },
+  "dex_trades": {
+    "token": "ROCKETFI",
+    "tx_count_1h": 412,
+    "tx_count_prev_1h": 158,
+    "large_sells": 1,
+    "large_buys": 18,
+    "volume_1h_usd": 380000
+  },
+  "flow_intelligence": {
+    "token": "ROCKETFI",
+    "concentration": "medium",
+    "wallet_count_leading": 9,
+    "dispersion_score": 0.45,
+    "signal": "momentum"
+  }
+}

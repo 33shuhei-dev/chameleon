@@ -1,0 +1,9 @@
+{
+  "timestamp": "2026-04-02T20:49:35.314112+00:00",
+  "token": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
+  "mode": "SLEEP",
+  "action": "NO ACTION",
+  "reason": "netflow near zero (+0), few SM traders (2)",
+  "confidence": 0.5,
+  "result": "waiting"
+}
