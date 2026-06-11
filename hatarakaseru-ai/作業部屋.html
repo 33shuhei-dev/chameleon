@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>『働かせるAI』ご主人の作業部屋</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:#101120;
+    font-family:"Hiragino Kaku Gothic ProN","Noto Sans CJK JP","Yu Gothic",sans-serif;
+    display:flex; justify-content:center; padding:20px;
+    color:#f0ede4;
+  }
+  .frame { width:1080px; }
+  header { display:flex; align-items:baseline; gap:14px; margin-bottom:12px; }
+  .badge {
+    background:#ffb347; color:#1f2233; font-weight:800; font-size:14px;
+    padding:4px 13px; border-radius:999px; letter-spacing:.08em;
+  }
+  header h1 { font-size:24px; font-weight:900; letter-spacing:.05em; }
+  header span.sub { color:#8e8ba6; font-size:13px; }
+
+  /* ===== 部屋 ===== */
+  .room {
+    position:relative; height:560px; border-radius:18px; overflow:hidden;
+    background:linear-gradient(180deg,#1c1e36 0%,#23264a 55%,#1a1c30 100%);
+    border:1px solid #34375c;
+  }
+  .moon {
+    position:absolute; top:36px; right:64px; width:120px; height:150px;
+    background:#161830; border-radius:10px; border:3px solid #3a3d63;
+    overflow:hidden;
+  }
+  .moon::after {
+    content:""; position:absolute; top:22px; left:30px; width:44px; height:44px;
+    border-radius:50%; background:#f5e9c8; box-shadow:0 0 24px #f5e9c877;
+  }
+  .shelf {
+    position:absolute; top:60px; left:48px; width:170px; height:10px;
+    background:#5d4a36; border-radius:3px;
+  }
+  .shelf::after {
+    content:"📚 🪴 ☕"; position:absolute; bottom:10px; left:14px; font-size:22px; letter-spacing:8px;
+  }
+  /* 机 */
+  .desk {
+    position:absolute; left:0; right:0; bottom:0; height:295px;
+    background:repeating-linear-gradient(95deg,#8a6a48 0 90px,#93724f 90px 180px);
+    border-top:6px solid #6f5538;
+  }
+  /* ノートPC */
+  .laptop {
+    position:absolute; left:50%; transform:translateX(-50%); bottom:235px;
+    width:240px; z-index:3; text-align:center;
+  }
+  .screen {
+    height:130px; border-radius:10px 10px 0 0; border:6px solid #3b3e60; border-bottom:0;
+    background:radial-gradient(circle at 50% 40%,#3f4e8c 0%,#272b4e 75%);
+    box-shadow:0 0 38px #5b6fd955;
+    display:flex; align-items:center; justify-content:center;
+    font-weight:900; font-size:19px; letter-spacing:.12em; color:#cdd6ff;
+  }
+  .keyboard {
+    height:14px; background:#3b3e60; border-radius:0 0 10px 10px;
+    box-shadow:0 8px 0 -2px #2c2f4d;
+  }
+
+  /* ===== キャラ ===== */
+  .char {
+    position:absolute; width:96px; text-align:center; z-index:4;
+    animation:bob 2.6s ease-in-out infinite alternate;
+  }
+  @keyframes bob { from{transform:translateY(0)} to{transform:translateY(-6px)} }
+  .char .body {
+    width:64px; height:64px; margin:0 auto; border-radius:50%;
+    background:var(--c,#888); display:flex; align-items:center; justify-content:center;
+    font-size:32px; box-shadow:inset 0 -6px 0 rgba(0,0,0,.18), 0 4px 10px rgba(0,0,0,.35);
+    border:3px solid rgba(255,255,255,.25);
+  }
+  .char .name {
+    margin-top:5px; display:inline-block; font-size:12.5px; font-weight:800;
+    background:var(--c,#888); color:#fff; padding:2px 10px; border-radius:999px;
+    letter-spacing:.05em; box-shadow:0 2px 4px rgba(0,0,0,.3);
+  }
+  .char .prop { font-size:18px; margin-top:3px; opacity:.9; }
+  .char.talk .body { animation:hop .45s ease; }
+  @keyframes hop { 30%{transform:translateY(-10px) scale(1.06)} }
+
+  /* 吹き出し */
+  .bubble {
+    position:absolute; bottom:calc(100% + 8px); left:50%; transform:translateX(-50%) scale(.6);
+    min-width:150px; max-width:200px;
+    background:#fff; color:#2b2b35; font-size:12.5px; font-weight:700;
+    border-radius:11px; padding:8px 11px; line-height:1.45;
+    opacity:0; pointer-events:none; transition:all .25s cubic-bezier(.34,1.56,.64,1);
+    z-index:9;
+  }
+  .bubble::after {
+    content:""; position:absolute; top:100%; left:50%; transform:translateX(-50%);
+    border:8px solid transparent; border-top-color:#fff; border-bottom:0;
+  }
+  .bubble.show { opacity:1; transform:translateX(-50%) scale(1); }
+
+  /* ご主人（画面の中から声がする体） */
+  .goshujin-bubble {
+    position:absolute; bottom:calc(100% + 10px); left:50%; transform:translateX(-50%) scale(.6);
+    width:250px; background:#ffb347; color:#1f2233; font-size:14px; font-weight:800;
+    border-radius:12px; padding:10px 13px; opacity:0; transition:all .25s ease; z-index:9;
+  }
+  .goshujin-bubble::after {
+    content:""; position:absolute; top:100%; left:50%; transform:translateX(-50%);
+    border:9px solid transparent; border-top-color:#ffb347; border-bottom:0;
+  }
+  .goshujin-bubble.show { opacity:1; transform:translateX(-50%) scale(1); }
+
+  /* 教訓バー */
+  .lesson {
+    position:absolute; left:50%; transform:translateX(-50%) translateY(20px); bottom:16px;
+    background:#ffb347; color:#1f2233; font-weight:800; font-size:14.5px;
+    border-radius:999px; padding:10px 26px; opacity:0; transition:all .4s ease; z-index:10;
+    box-shadow:0 6px 18px rgba(0,0,0,.4); white-space:nowrap;
+  }
+  .lesson.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+  /* ===== 操作パネル ===== */
+  .panel {
+    margin-top:14px; background:#1c1e36; border:1px solid #34375c; border-radius:14px;
+    padding:16px 18px;
+  }
+  .panel .row { display:flex; gap:10px; }
+  .panel input {
+    flex:1; font-size:15px; padding:11px 16px; border-radius:10px;
+    border:2px solid #3b3e60; background:#12132a; color:#f0ede4; outline:none;
+  }
+  .panel input:focus { border-color:#ffb347; }
+  .panel button {
+    font-size:15px; font-weight:800; padding:11px 26px; border-radius:10px; border:0;
+    background:#ffb347; color:#1f2233; cursor:pointer; letter-spacing:.06em;
+  }
+  .panel button:disabled { opacity:.45; cursor:default; }
+  .chips { margin-top:10px; display:flex; gap:8px; flex-wrap:wrap; }
+  .chip {
+    font-size:12.5px; font-weight:700; color:#b9b6c9; background:#262947;
+    border:1px solid #3b3e60; border-radius:999px; padding:5px 13px; cursor:pointer;
+  }
+  .chip:hover { color:#ffb347; border-color:#ffb347; }
+  footer { text-align:right; color:#56546e; font-size:11px; margin-top:10px; letter-spacing:.08em; }
+</style>
+</head>
+<body>
+<div class="frame">
+  <header>
+    <span class="badge">働かせるAI</span>
+    <h1>ご主人の作業部屋</h1>
+    <span class="sub">悩みを入力すると、AIたちの作戦会議が始まる</span>
+  </header>
+
+  <div class="room" id="room">
+    <div class="moon"></div>
+    <div class="shelf"></div>
+    <div class="desk"></div>
+
+    <div class="laptop">
+      <div class="goshujin-bubble" id="b-goshujin"></div>
+      <div class="screen">働かせるAI</div>
+      <div class="keyboard"></div>
+    </div>
+
+    <!-- 奥の列 -->
+    <div class="char" style="--c:#f2884b; left:5%;  bottom:255px; animation-delay:.0s" id="c-hirameki">
+      <div class="bubble" id="b-hirameki"></div>
+      <div class="body">💡</div><br><span class="name">ひらめき</span>
+      <div class="prop">🖍️ 企画</div>
+    </div>
+    <div class="char" style="--c:#9b7bd4; left:21%; bottom:240px; animation-delay:.4s" id="c-kotonoha">
+      <div class="bubble" id="b-kotonoha"></div>
+      <div class="body">✍️</div><br><span class="name">ことのは</span>
+      <div class="prop">📄 文章</div>
+    </div>
+    <div class="char" style="--c:#e0699b; left:66%; bottom:240px; animation-delay:.8s" id="c-irodori">
+      <div class="bubble" id="b-irodori"></div>
+      <div class="body">🎨</div><br><span class="name">いろどり</span>
+      <div class="prop">🖌️ 画像</div>
+    </div>
+    <div class="char" style="--c:#5b8dd9; left:83%; bottom:255px; animation-delay:1.2s" id="c-shirabe">
+      <div class="bubble" id="b-shirabe"></div>
+      <div class="body">🔍</div><br><span class="name">しらべ</span>
+      <div class="prop">📚 調査</div>
+    </div>
+
+    <!-- 手前の列 -->
+    <div class="char" style="--c:#56b87f; left:13%; bottom:90px; animation-delay:.6s" id="c-narabe">
+      <div class="bubble" id="b-narabe"></div>
+      <div class="body">🗂️</div><br><span class="name">ならべ</span>
+      <div class="prop">🏷️ 整理</div>
+    </div>
+    <div class="char" style="--c:#d9534f; left:45%; bottom:80px; animation-delay:1.0s" id="c-mihari">
+      <div class="bubble" id="b-mihari"></div>
+      <div class="body">🚩</div><br><span class="name">みはり</span>
+      <div class="prop">🖊️ 検品</div>
+    </div>
+    <div class="char" style="--c:#8a93a6; left:76%; bottom:90px; animation-delay:1.4s" id="c-shiage">
+      <div class="bubble" id="b-shiage"></div>
+      <div class="body">⚙️</div><br><span class="name">しあげ</span>
+      <div class="prop">🧰 実行</div>
+    </div>
+
+    <div class="lesson" id="lesson"></div>
+  </div>
+
+  <div class="panel">
+    <div class="row">
+      <input id="theme" placeholder="ご主人の悩みややりたいことを入力（例：投稿ネタがない）" maxlength="30">
+      <button id="run">働かせる</button>
+    </div>
+    <div class="chips">
+      <span class="chip">投稿ネタがない</span>
+      <span class="chip">キャンプ飯の図鑑を作りたい</span>
+      <span class="chip">noteの構成がまとまらない</span>
+      <span class="chip">AIで何か始めたい</span>
+    </div>
+  </div>
+  <footer>『働かせるAI』 #働かせるAI ｜ モックアップ v0.1</footer>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const BUBBLE_LIFE = 4200;
+
+function say(who, text, hop = true) {
+  const b = $('b-' + who);
+  b.textContent = text;
+  b.classList.add('show');
+  if (hop && who !== 'goshujin') {
+    const c = $('c-' + who);
+    c.classList.remove('talk'); void c.offsetWidth; c.classList.add('talk');
+  }
+  clearTimeout(b._t);
+  b._t = setTimeout(() => b.classList.remove('show'), BUBBLE_LIFE);
+}
+
+function scenario(theme) {
+  return [
+    ['goshujin', `「${theme}」。よし、働けAIたち！`],
+    ['hirameki', '企画、100個出します！'],
+    ['shirabe',  'お待ちを。類似事例と規約を確認します'],
+    ['narabe',   '多すぎます。まず3案に絞りましょう'],
+    ['kotonoha', '文面できました。現在8000字です'],
+    ['irodori',  '画像生成中……もっと光を……'],
+    ['mihari',   '長すぎます。あと昨日と同じ構図です'],
+    ['shiage',   '修正反映。投稿準備、完了しました'],
+    ['goshujin', '……よし。最後は俺が見て決める'],
+  ];
+}
+
+let running = false;
+function run() {
+  if (running) return;
+  const theme = $('theme').value.trim() || 'AIで何か始めたい';
+  running = true; $('run').disabled = true;
+  $('lesson').classList.remove('show');
+  scenario(theme).forEach(([who, text], i) => {
+    setTimeout(() => say(who, text), i * 1500);
+  });
+  const total = scenario(theme).length * 1500;
+  setTimeout(() => {
+    $('lesson').textContent = '今日の働かせ方：丸投げしない。広げる係・畳む係・締める係を分ける。';
+    $('lesson').classList.add('show');
+    running = false; $('run').disabled = false;
+  }, total);
+}
+
+$('run').addEventListener('click', run);
+$('theme').addEventListener('keydown', e => { if (e.key === 'Enter') run(); });
+document.querySelectorAll('.chip').forEach(ch =>
+  ch.addEventListener('click', () => { $('theme').value = ch.textContent; run(); }));
+
+/* スクリーンショット用デモモード：?demo で会議中の場面を静止表示 */
+if (location.search.includes('demo')) {
+  $('theme').value = 'キャンプ飯の図鑑を作りたい';
+  const freeze = [
+    ['goshujin', '「キャンプ飯の図鑑を作りたい」。働けAIたち！'],
+    ['hirameki', '企画、100個出します！'],
+    ['irodori',  '画像生成中……もっと光を……'],
+    ['mihari',   'それ昨日と同じ構図です'],
+    ['shiage',   '実行内容が未定です'],
+  ];
+  freeze.forEach(([who, text]) => { const b = $('b-' + who); b.textContent = text; b.classList.add('show'); clearTimeout(b._t); });
+  $('lesson').textContent = '今日の働かせ方：丸投げしない。広げる係・畳む係・締める係を分ける。';
+  $('lesson').classList.add('show');
+  document.querySelectorAll('.char').forEach(c => c.style.animation = 'none');
+}
+</script>
+</body>
+</html>
