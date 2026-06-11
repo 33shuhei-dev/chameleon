@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>『働かせるAI』AI役割分担マップ</title>
+<style>
+  :root {
+    --bg: #1f2233;
+    --desk: #2a2d44;
+    --card: #f7f3ea;
+    --ink: #2b2b35;
+    --accent: #ffb347;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #14151f;
+    font-family: "Hiragino Kaku Gothic ProN", "Noto Sans CJK JP", "Yu Gothic", sans-serif;
+    display: flex; justify-content: center; padding: 24px;
+  }
+  .canvas {
+    width: 1080px;
+    background: linear-gradient(160deg, #232642 0%, #1c1e33 55%, #191a2c 100%);
+    border-radius: 18px;
+    padding: 44px 56px 36px;
+    color: #f0ede4;
+    position: relative;
+    overflow: hidden;
+  }
+  /* 机の木目っぽい下部帯 */
+  .canvas::after {
+    content: "";
+    position: absolute; left: 0; right: 0; bottom: 0; height: 14px;
+    background: repeating-linear-gradient(90deg, #8a6a48 0 60px, #93724f 60px 120px);
+    opacity: .85;
+  }
+  .badge {
+    display: inline-block;
+    background: var(--accent); color: #1f2233;
+    font-weight: 800; font-size: 15px;
+    padding: 5px 14px; border-radius: 999px;
+    letter-spacing: .08em;
+  }
+  h1 {
+    font-size: 34px; font-weight: 900; margin-top: 12px;
+    letter-spacing: .04em;
+  }
+  .subtitle { color: #b9b6c9; font-size: 15px; margin-top: 6px; }
+
+  /* ご主人の吹き出し */
+  .goshujin {
+    display: flex; align-items: center; gap: 16px;
+    margin: 26px 0 6px;
+  }
+  .goshujin .face {
+    width: 58px; height: 58px; border-radius: 50%;
+    background: #3a3d57; display: flex; align-items: center; justify-content: center;
+    font-size: 30px; flex-shrink: 0;
+    border: 2px solid #565a7e;
+  }
+  .bubble {
+    background: #fff; color: var(--ink);
+    border-radius: 14px; padding: 12px 18px;
+    font-size: 18px; font-weight: 700; position: relative;
+  }
+  .bubble::before {
+    content: ""; position: absolute; left: -10px; top: 50%;
+    transform: translateY(-50%);
+    border: 10px solid transparent; border-right-color: #fff; border-left: 0;
+  }
+  .bubble small { display: block; font-weight: 500; font-size: 12px; color: #888; margin-top: 2px; }
+
+  /* フロー */
+  .flow { margin-top: 18px; position: relative; z-index: 1; }
+  .step {
+    display: flex; align-items: stretch; gap: 14px; margin-bottom: 0;
+  }
+  .step-label {
+    width: 86px; flex-shrink: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 800; color: #8e8ba6; letter-spacing: .1em;
+  }
+  .step-label .num {
+    font-size: 20px; color: var(--accent); font-weight: 900;
+  }
+  .cards { display: flex; gap: 14px; flex: 1; padding: 10px 0; }
+  .card {
+    background: var(--card); color: var(--ink);
+    border-radius: 14px; padding: 14px 16px;
+    flex: 1; display: flex; gap: 12px; align-items: flex-start;
+    box-shadow: 0 4px 0 rgba(0,0,0,.25);
+    border-top: 5px solid var(--c, #999);
+  }
+  .avatar {
+    width: 52px; height: 52px; border-radius: 50%;
+    background: var(--c, #999);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px; flex-shrink: 0;
+    box-shadow: inset 0 -4px 0 rgba(0,0,0,.15);
+  }
+  .card h2 { font-size: 18px; font-weight: 900; display: flex; align-items: baseline; gap: 8px; }
+  .card h2 .role {
+    font-size: 11px; font-weight: 700; color: #fff;
+    background: var(--c, #999); border-radius: 999px; padding: 2px 9px;
+    letter-spacing: .06em;
+  }
+  .order {
+    font-size: 13.5px; margin-top: 5px; font-weight: 700; color: #1f4d3a;
+    background: #e6f2ea; border-radius: 8px; padding: 4px 9px; display: inline-block;
+  }
+  .caution { font-size: 12px; color: #a05544; margin-top: 5px; }
+  .caution::before { content: "⚠ "; }
+
+  .arrow {
+    width: 86px; flex-shrink: 0; text-align: center;
+    color: var(--accent); font-size: 18px; line-height: 1;
+    padding: 1px 0 3px;
+  }
+
+  /* 最終判断 */
+  .final {
+    margin-top: 10px;
+    background: #3a3d57; border: 2px dashed var(--accent);
+    border-radius: 14px; padding: 14px 20px;
+    display: flex; align-items: center; gap: 14px;
+    font-size: 17px; font-weight: 800;
+  }
+  .final .face {
+    width: 46px; height: 46px; border-radius: 50%;
+    background: #2a2d44; display: flex; align-items: center; justify-content: center;
+    font-size: 24px; border: 2px solid #565a7e; flex-shrink: 0;
+  }
+  .final em { font-style: normal; color: var(--accent); }
+
+  /* フッター教訓 */
+  .lesson {
+    margin-top: 22px; margin-bottom: 14px;
+    background: var(--accent); color: #1f2233;
+    border-radius: 12px; padding: 13px 20px;
+    font-size: 15px; font-weight: 800; text-align: center;
+    letter-spacing: .03em;
+  }
+  .lesson b { font-size: 17px; }
+  .credit {
+    text-align: right; font-size: 11px; color: #6f6c87; margin-top: 10px; margin-bottom: 8px;
+    letter-spacing: .08em;
+  }
+</style>
+</head>
+<body>
+<div class="canvas">
+  <span class="badge">働かせるAI</span>
+  <h1>AI役割分担マップ</h1>
+  <div class="subtitle">例：X投稿を1本つくるとき、ご主人はAIたちをこう働かせる</div>
+
+  <div class="goshujin">
+    <div class="face">👤</div>
+    <div class="bubble">「投稿を作りたい。働けAIたち」
+      <small>※最初に伝える：目的・形式・対象・期限</small>
+    </div>
+  </div>
+
+  <div class="flow">
+
+    <div class="step">
+      <div class="step-label"><span class="num">1</span>ふくらます</div>
+      <div class="cards">
+        <div class="card" style="--c:#f2884b;">
+          <div class="avatar">💡</div>
+          <div>
+            <h2>ひらめき <span class="role">企画</span></h2>
+            <div class="order">頼み方：「ネタを10個。広げすぎ禁止」</div>
+            <div class="caution">放っておくと100個出してサイト化を始める</div>
+          </div>
+        </div>
+        <div class="card" style="--c:#5b8dd9;">
+          <div class="avatar">🔍</div>
+          <div>
+            <h2>しらべ <span class="role">調査</span></h2>
+            <div class="order">頼み方：「事実と推測を分けて確認して」</div>
+            <div class="caution">慎重すぎて勢いを止める。でも後で効く</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow">▼</div>
+
+    <div class="step">
+      <div class="step-label"><span class="num">2</span>ととのえる</div>
+      <div class="cards">
+        <div class="card" style="--c:#56b87f;">
+          <div class="avatar">🗂️</div>
+          <div>
+            <h2>ならべ <span class="role">整理</span></h2>
+            <div class="order">頼み方：「3案に絞って、構成にして」</div>
+            <div class="caution">きっちりしすぎて遊びを消しがち。ノリは守る</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow">▼</div>
+
+    <div class="step">
+      <div class="step-label"><span class="num">3</span>つくる</div>
+      <div class="cards">
+        <div class="card" style="--c:#9b7bd4;">
+          <div class="avatar">✍️</div>
+          <div>
+            <h2>ことのは <span class="role">文章</span></h2>
+            <div class="order">頼み方：「140字で。自分の口調で」</div>
+            <div class="caution">字数を言わないと感動長文が届く</div>
+          </div>
+        </div>
+        <div class="card" style="--c:#e0699b;">
+          <div class="avatar">🎨</div>
+          <div>
+            <h2>いろどり <span class="role">画像</span></h2>
+            <div class="order">頼み方：「画像内に文字は入れないで」</div>
+            <div class="caution">放っておくと未来都市になる</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow">▼</div>
+
+    <div class="step">
+      <div class="step-label"><span class="num">4</span>けんぴん</div>
+      <div class="cards">
+        <div class="card" style="--c:#d9534f;">
+          <div class="avatar">🚩</div>
+          <div>
+            <h2>みはり <span class="role">検品</span></h2>
+            <div class="order">頼み方：「誤字・炎上・権利を投稿前チェック」</div>
+            <div class="caution">辛口。でもこの係を飛ばすと事故る</div>
+          </div>
+        </div>
+        <div class="card" style="--c:#8a93a6;">
+          <div class="avatar">⚙️</div>
+          <div>
+            <h2>しあげ <span class="role">実行</span></h2>
+            <div class="order">頼み方：「投稿サイズに整えて、予約まで」</div>
+            <div class="caution">指示が曖昧だと黙って止まる</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow">▼</div>
+
+    <div class="final">
+      <div class="face">👤</div>
+      <div>最後に判断するのは <em>ご主人</em>。AIは出すまで、決めるのは人間。</div>
+    </div>
+
+  </div>
+
+  <div class="lesson">
+    今日の働かせ方：<b>広げる係・畳む係・作る係・締める係を分ける。</b>　1体に丸投げしない。
+  </div>
+  <div class="credit">『働かせるAI』 #働かせるAI</div>
+</div>
+</body>
+</html>
