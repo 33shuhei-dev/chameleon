@@ -1,0 +1,10 @@
+# Python
+__pycache__/
+*.pyc
+
+# 実行時に生成されるデータ
+logs/
+cache/
+
+# 環境変数
+.env
