@@ -3,6 +3,8 @@ chameleon.py - Main loop (10-minute cycle).
 
 This is not a trading bot.
 This is a market-state interpreter powered by Smart Money.
+
+v2: Integrated JSON Registry, 14-point Quality Gate, and Schema Manager.
 """
 
 import json
@@ -20,10 +22,12 @@ import strategy
 import executor
 import scanner
 import universe
+import quality_gate
 from risk_manager import RiskManager
 from api_usage_logger import log_api_usage, log_decision, log_cycle_summary
+from schema_manager import get_manager as get_schema_manager
 
-# ── Config ───────────────────────────────────────────────────────────────────
+# ── Config ────────────────────────────────────────────────────────────────────
 USE_MOCK   = os.getenv("USE_MOCK", "false").lower() == "true"
 CYCLE_SECS = int(os.getenv("CYCLE_SECS", "600"))   # 10分
 LOG_DIR    = Path("logs")
@@ -41,6 +45,7 @@ logging.basicConfig(
 logger = logging.getLogger("chameleon")
 
 risk = RiskManager()
+sm   = get_schema_manager()
 
 
 # ── Mock helpers ──────────────────────────────────────────────────────────────
@@ -61,7 +66,6 @@ def _convert_mock(raw: dict) -> dict:
     n  = raw.get("netflow", raw.get("inflows", {}))
     d  = raw.get("dex_trades", {})
     p  = raw.get("price", {})
-    fi = raw.get("flow_intelligence", {})
     return {
         "token": raw.get("token", ""),
         "holdings": {"data": [{
@@ -90,27 +94,34 @@ def _save_log(entry: dict):
 
 def _print_decision(entry: dict):
     symbol = entry.get("symbol", entry["token"][:12])
+    qs     = entry.get("quality_score", "?")
     print(
         f"\nMODE={entry['mode']}\n"
         f"TOKEN={symbol}\n"
         f"ACTION={entry['action']}\n"
         f"REASON={entry['reason']}\n"
-        f"CONFIDENCE={entry['confidence']}"
+        f"CONFIDENCE={entry['confidence']}  QUALITY={qs}/14"
     )
 
 
 # ── Core decision ─────────────────────────────────────────────────────────────
 
-def process_token(token_address: str, symbol: str = "") -> dict:
+def process_token(
+    token_address: str,
+    symbol:        str = "",
+    universe_data: dict | None = None,
+) -> dict:
     log_entry = {
-        "timestamp":  datetime.now(timezone.utc).isoformat(),
-        "token":      token_address,
-        "symbol":     symbol,
-        "mode":       "SLEEP",
-        "action":     "NO ACTION",
-        "reason":     "",
-        "confidence": 0.0,
-        "result":     "",
+        "timestamp":     datetime.now(timezone.utc).isoformat(),
+        "token":         token_address,
+        "symbol":        symbol,
+        "mode":          "SLEEP",
+        "action":        "NO ACTION",
+        "reason":        "",
+        "confidence":    0.0,
+        "quality_score": 0,
+        "gate_details":  {},
+        "result":        "",
     }
 
     try:
@@ -125,33 +136,61 @@ def process_token(token_address: str, symbol: str = "") -> dict:
                 log_entry["reason"] = "data fetch failed"
                 return log_entry
 
+        # ── Strategy: detect market state ─────────────────────────────────────
         mode, reason, confidence = strategy.detect_mode(data)
         log_entry["mode"]       = mode
         log_entry["reason"]     = reason
         log_entry["confidence"] = confidence
 
+        # ── Quality Gate: 14-point evaluation ─────────────────────────────────
+        qr = quality_gate.evaluate(
+            mode          = mode,
+            confidence    = confidence,
+            data          = data,
+            universe_data = universe_data,
+            risk_manager  = risk,
+            token_address = token_address,
+        )
+        log_entry["quality_score"] = qr.total_score
+        log_entry["gate_details"]  = qr.to_dict()
+
+        if not qr.action_allowed and mode != "SLEEP":
+            logger.info(
+                "%-10s QualityGate BLOCK score=%d/14 blocking=%s",
+                symbol[:10], qr.total_score, qr.blocking_gates,
+            )
+
+        # ── Execution: route action ───────────────────────────────────────────
         if mode in ("STEALTH", "CHASE"):
-            allowed, gate_reason = risk.can_enter(mode, data)
-            if allowed:
-                log_entry["action"] = "BUY"
-                trade = executor.execute_trade(token_address, "buy")
-                log_entry["result"] = "executed" if trade["success"] else f"failed: {trade['error']}"
-                if trade["success"]:
-                    risk.open_position(token_address, 0.0, executor.TRADE_SIZE_SOL)
+            if not qr.action_allowed:
+                log_entry["action"] = "BLOCKED (QG)"
+                log_entry["result"] = f"quality score {qr.total_score}/14 < threshold"
             else:
-                log_entry["action"] = "BLOCKED"
-                log_entry["result"] = gate_reason
+                allowed, gate_reason = risk.can_enter(mode, data)
+                if allowed:
+                    log_entry["action"] = "BUY"
+                    trade = executor.execute_trade(token_address, "buy")
+                    log_entry["result"] = "executed" if trade["success"] else f"failed: {trade['error']}"
+                    if trade["success"]:
+                        risk.open_position(token_address, 0.0, executor.TRADE_SIZE_SOL)
+                else:
+                    log_entry["action"] = "BLOCKED"
+                    log_entry["result"] = gate_reason
 
         elif mode == "ESCAPE":
-            log_entry["action"] = "SELL"
-            holding = any(p["token"] == token_address for p in risk.open_positions)
-            if holding:
-                trade = executor.execute_trade(token_address, "sell")
-                log_entry["result"] = "executed" if trade["success"] else f"failed: {trade['error']}"
-                risk.close_position(token_address, 0.0, "exit")
+            if not qr.action_allowed:
+                log_entry["action"] = "BLOCKED (QG)"
+                log_entry["result"] = f"quality score {qr.total_score}/14 < threshold"
             else:
-                log_entry["action"] = "SELL (no position)"
-                log_entry["result"] = "no open position to close"
+                log_entry["action"] = "SELL"
+                holding = any(p["token"] == token_address for p in risk.open_positions)
+                if holding:
+                    trade = executor.execute_trade(token_address, "sell")
+                    log_entry["result"] = "executed" if trade["success"] else f"failed: {trade['error']}"
+                    risk.close_position(token_address, 0.0, "exit")
+                else:
+                    log_entry["action"] = "SELL (no position)"
+                    log_entry["result"] = "no open position to close"
 
         else:
             log_entry["action"] = "NO ACTION"
@@ -171,12 +210,21 @@ def process_token(token_address: str, symbol: str = "") -> dict:
 
 def main():
     logger.info("=" * 60)
-    logger.info("CHAMELEON BOT - starting (USE_MOCK=%s, CYCLE=%ds)", USE_MOCK, CYCLE_SECS)
+    logger.info("CHAMELEON BOT v2 - starting (USE_MOCK=%s, CYCLE=%ds)", USE_MOCK, CYCLE_SECS)
     logger.info("This is not a trading bot.")
     logger.info("This is a market-state interpreter powered by Smart Money.")
+    logger.info("JSON Registry: %d types registered", len(__import__("json_registry").JSON_REGISTRY))
     logger.info("=" * 60)
 
     uni = universe.load()
+
+    # Startup integrity check
+    violations = sm.check_integrity(uni)
+    if violations:
+        for v in violations:
+            logger.warning("Integrity violation [%s]: %s", v["constraint"], v["detail"])
+    else:
+        logger.info("Integrity check: OK")
 
     while True:
         if risk.daily_halted:
@@ -184,24 +232,24 @@ def main():
             time.sleep(CYCLE_SECS)
             continue
 
-        cycle_id = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
+        cycle_id           = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
         api_calls_this_cycle = 0
-        mode_counts = {"STEALTH": 0, "CHASE": 0, "ESCAPE": 0, "SLEEP": 0}
+        mode_counts        = {"STEALTH": 0, "CHASE": 0, "ESCAPE": 0, "SLEEP": 0}
+        quality_scores: list[int] = []
 
-        # ── Step1: スキャンしてwatchlistを更新 ──────────────────────────
+        # ── Step1: scan and update watchlist ──────────────────────────────
         if not USE_MOCK:
             logger.info("Scanning top tokens from Nansen...")
             top_tokens = scanner.scan()
-            api_calls_this_cycle += 1  # scanner は1回のAPIコール
+            api_calls_this_cycle += 1
             for token_info in top_tokens:
                 universe.add_to_watchlist(uni, token_info)
             universe.cleanup_stale(uni)
             universe.save(uni)
             logger.info("Watchlist size: %d tokens", len(uni["watchlist"]))
 
-        # ── Step2: watchlist内のトークンを分析 ──────────────────────────
+        # ── Step2: analyse watchlist tokens ───────────────────────────────
         if USE_MOCK:
-            # モード時は固定アドレスで動作確認
             targets = [
                 ("SHADOW9",  "SHADOW9"),
                 ("ROCKETFI", "ROCKETFI"),
@@ -217,13 +265,13 @@ def main():
             logger.info("No tokens to analyze this cycle.")
         else:
             for token_address, symbol in targets:
-                entry = process_token(token_address, symbol)
+                entry = process_token(token_address, symbol, universe_data=uni)
 
-                # universe の mode_streak を更新
+                quality_scores.append(entry.get("quality_score", 0))
+
                 if not USE_MOCK:
                     universe.update_mode(uni, token_address, entry["mode"])
 
-                    # STEALTH 3回連続 → CHASE 昇格
                     if entry["mode"] == "STEALTH":
                         streak = universe.get_streak(uni, token_address, "STEALTH")
                         if streak >= 3:
@@ -238,13 +286,13 @@ def main():
                 _print_decision(entry)
                 _save_log(entry)
                 logger.info(
-                    "%-10s MODE=%-7s ACTION=%-20s CONFIDENCE=%.2f",
-                    symbol[:10], entry["mode"], entry["action"], entry["confidence"],
+                    "%-10s MODE=%-7s ACTION=%-20s CONF=%.2f QG=%d/14",
+                    symbol[:10], entry["mode"], entry["action"],
+                    entry["confidence"], entry.get("quality_score", 0),
                 )
 
-                # 証拠ログ
                 if not USE_MOCK:
-                    api_calls_this_cycle += 2  # holdings + netflow
+                    api_calls_this_cycle += 2
                     log_api_usage(
                         cycle_id=cycle_id,
                         endpoint="smart-money/holdings",
@@ -271,6 +319,7 @@ def main():
                         action=entry["action"],
                         confidence=entry["confidence"],
                         reason=entry["reason"],
+                        quality_score=entry.get("quality_score", 0),
                     )
                     mode_counts[entry["mode"]] = mode_counts.get(entry["mode"], 0) + 1
 
@@ -278,11 +327,13 @@ def main():
                 universe.save(uni)
 
         if not USE_MOCK:
+            quality_avg = round(sum(quality_scores) / len(quality_scores), 2) if quality_scores else 0.0
             log_cycle_summary(
                 cycle_id=cycle_id,
                 watchlist_size=len(uni.get("watchlist", {})),
                 api_calls=api_calls_this_cycle,
                 mode_counts=mode_counts,
+                quality_avg=quality_avg,
             )
 
         logger.info("Cycle complete. Sleeping %ds.", CYCLE_SECS)
